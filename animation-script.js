@@ -1,12 +1,3 @@
-var circle = document.getElementById('circle');
-var xPos = 0;
-var yPos = 0;
-
-const CIRCLE_STEP = 2;
-
-var xMove = CIRCLE_STEP;
-var yMove = CIRCLE_STEP;
-
 function getRandomColor() {
     var letters = '0123456789ABCDEF'.split('');
     var color = '#';
@@ -16,31 +7,50 @@ function getRandomColor() {
     return color;
 }
 
-function circleMove() {
-    circle.style.left = xPos + 'px';
-    circle.style.top = yPos + 'px';
-    xPos += xMove;
-    yPos += yMove;
+function circleMove(circle) {
+    var circleRedius = parseInt(circle.style.height);
+    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight;
 
+    if (!circle.style.left || !circle.style.top) {
+        circle.style.left = (windowWidth / 2 ) - circleRedius + 'px';
+        circle.style.top = (windowHeight / 2) - circleRedius + 'px';
+    }
 
-    if (xPos > 900) {
-        xMove = -CIRCLE_STEP;
+    var circleLeft = parseInt(circle.style.left);
+    var circleTop = parseInt(circle.style.top);
+    var circleVectorX = parseInt(circle.dataset.vectorx);
+    var circleVectorY = parseInt(circle.dataset.vectory);
+    var circleSpeed = parseInt(circle.dataset.speed);
+
+    if (circleLeft > (windowWidth - circleRedius)) {
+        circle.dataset.vectorx = -1;
         circle.style.backgroundColor = getRandomColor()
-    } else if (xPos <= 0) {
-        xMove = CIRCLE_STEP;
+    } else if (circleLeft <= 0) {
+        circle.dataset.vectorx = 1;
         circle.style.backgroundColor = getRandomColor()
     }
 
-    if (yPos > 400) {
-        yMove = -CIRCLE_STEP;
+    if (circleTop > windowHeight - circleRedius) {
+        circle.dataset.vectory = -1;
         circle.style.backgroundColor = getRandomColor()
-    } else if (yPos < 0) {
-        yMove = CIRCLE_STEP;
+    } else if (circleTop < 0) {
+        circle.dataset.vectory = 1;
         circle.style.backgroundColor = getRandomColor()
+    }
+
+    circle.style.left = (circleLeft + (circleVectorX * circleSpeed)) + 'px';
+    circle.style.top = (circleTop + (circleVectorY * circleSpeed )) + 'px';
+}
+
+function run(){
+    var circles = document.getElementsByClassName('shape');
+    for (circle of circles) {
+        circleMove(circle);
     }
 }
 
-setInterval(circleMove, 5);
+setInterval(run, 10);
 
 
 
